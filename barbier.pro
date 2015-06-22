@@ -20,4 +20,6 @@ SOURCES += main.cpp
 HEADERS += \
     HairStyleMonitor.h \
     Client.h \
-    Barber.h
+    Barber.h \
+    ClientTatoo.h \
+    ClientHaircut.h
