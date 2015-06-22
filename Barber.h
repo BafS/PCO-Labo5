@@ -17,6 +17,18 @@ public:
     Barber() {};
     ~Barber() {};
 
+private:
+    bool alive = true;
+
+Q_OBJECT
+    void run() {
+
+        while(alive) {
+            qDebug() << "Barber: I'm free";
+        }
+
+    }
+
 };
 
 #endif // BARBER_H

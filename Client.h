@@ -21,7 +21,8 @@
 #define HAIR_GROW_TIME_MIN  1
 #define HAIR_GROW_TIME_MAX  5
 
-#define ID_RANGE 32000
+#define ID_RANGE        32000
+#define MULT_GO_HOME    0.5
 
 
 
@@ -29,6 +30,7 @@ class Client : public QThread {
 private:
     unsigned int id;
     bool alive = true;
+    unsigned int sleepTime;
 
 Q_OBJECT
     void run() {
@@ -40,7 +42,9 @@ Q_OBJECT
             waitHairGrow();
             qDebug() << "Client("<<id<<"): " << "hair ready to cut";
             qDebug() << "Client("<<id<<"): " << "go to waiting room";
-            goToWaitingRoom();
+            while(!goToWaitingRoom()) {
+                goHome();
+            }
             qDebug() << "Client("<<id<<"): " << "enter in waiting room";
             qDebug() << "Client("<<id<<"): " << "wait barber";
             waitingBarber();
@@ -53,12 +57,16 @@ Q_OBJECT
     }
 
     void waitHairGrow() {
-        unsigned int sleepTime = (rand() % (HAIR_GROW_TIME_MAX + 1)) + HAIR_GROW_TIME_MIN;
         this->sleep(sleepTime);
     }
 
-    void goToWaitingRoom() {
+    bool goToWaitingRoom() {
+        // TODO: vérifier si la salle d'attente est pleine ou non
+        return true;
+    }
 
+    void goHome() {
+        this->sleep(sleepTime * MULT_GO_HOME);
     }
 
     void waitingBarber() {
@@ -76,6 +84,10 @@ Q_OBJECT
 public:
     Client() {
         id = rand() % ID_RANGE; // generate random id
+
+        // Random sleep time
+        sleepTime = (rand() % (HAIR_GROW_TIME_MAX + 1)) + HAIR_GROW_TIME_MIN;
+
     };
 
     ~Client() {};

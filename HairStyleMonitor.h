@@ -14,7 +14,6 @@ protected:
     QWaitCondition barber;
     int nbClients = 0;
 
-
 public:
     HairStyleMonitor() {};
     ~HairStyleMonitor() {};
