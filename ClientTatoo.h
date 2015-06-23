@@ -13,8 +13,28 @@
 #ifndef CLIENTTATOO_H
 #define CLIENTTATOO_H
 
+#include "Client.h"
+
 class ClientTatoo : public Client {
 
+    Q_OBJECT
+        void run() {
+
+            qDebug() << "New client n°" << id;
+
+            while (alive) {
+                qDebug() << "Client("<<id<<"): want a tatoo";
+
+                // Essaye de rentrer dans la salle d'attente
+                qDebug() << "Client("<<id<<"): try to enter in waiting room";
+
+                while(!mon->tryEnter()) {
+                    // @TODO wait ?
+                }
+
+                mon->goToBarber();
+            }
+        }
 };
 
 #endif // CLIENTTATOO_H

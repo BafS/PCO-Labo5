@@ -11,14 +11,14 @@
 #include <iostream>
 #include "HairStyleMonitor.h"
 #include "Barber.h"
+#include "ClientHaircut.h"
 #include "Client.h"
 
 void display() {
 
 }
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
     QCoreApplication a(argc, argv);
 
     int SIZE_OF_WAINTING_ROOM = 0;
@@ -50,14 +50,14 @@ int main(int argc, char *argv[])
      * init. des clients, du barbier et du moniteur
      */
     HairStyleMonitor mon;
-    unsigned int randNumber;
+    //unsigned int randNumber;
     Barber barber(&mon);
     //barber = new Barber(&mon);
     barber.start();
     QList<Client*> clients;
-    for (int i = 0; i < NB_CLIENTS_HAIRCUT; i++) {
 
-        clients.append(new Client(&mon));
+    for (int i = 0; i < NB_CLIENTS_HAIRCUT; i++) {
+        clients.append(new ClientHaircut(&mon));
         clients.at(i)->start();
     }
 
