@@ -35,6 +35,12 @@ class ClientTatoo : public Client {
                 mon->goToBarber();
             }
         }
+
+public:
+        ClientTatoo(HairStyleMonitor *m) : Client(m) {
+
+        }
+
 };
 
 #endif // CLIENTTATOO_H
