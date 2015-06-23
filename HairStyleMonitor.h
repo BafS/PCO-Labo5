@@ -90,6 +90,8 @@ public:
         }
 
         nbClients--;
+
+        // réveil d barbier
         barberIsFree = false;
         barberIsWorking = true;
         barber.wakeOne();
