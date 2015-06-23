@@ -22,6 +22,9 @@ public:
     HairStyleMonitor() {};
     ~HairStyleMonitor() {};
 
+    /**
+     * Permet au barbier d'annoncer qu'il ouvre son salon de coiffure
+     */
     void openStore() {
         mutex.lock();
 
@@ -30,7 +33,37 @@ public:
         mutex.unlock();
     }
 
+    /**
+     * Attente passive du barbier lorsqu'il n'y a pas de clients
+     */
+    void waitClient() {
+        mutex.lock();
 
+        if (nbClients < 1) {
+            barber.wait(&mutex);
+        }
+
+        mutex.unlock();
+    }
+
+    /**
+     * Lors de la fin d'une coupe ou d'une coiffure, réveil
+     * le prochain client
+     */
+    void ejectClient() {
+        mutex.lock();
+
+        qDebug() << "mon: next!";
+        working.wakeOne();
+
+        mutex.unlock();
+    }
+
+
+    /**
+     * Le client esssaie d'entrer dans la salle d'attente
+     * @return vrai si l'entrée est réussie
+     */
     bool tryEnter() {
         mutex.lock();
 
@@ -46,6 +79,9 @@ public:
         return false;
     }
 
+    /**
+     * Le client attend que le barbier soit libre et se fait tatouer/couper les cheveux
+     */
     void goToBarber() {
         mutex.lock();
 
@@ -58,52 +94,16 @@ public:
         barberIsWorking = true;
         barber.wakeOne();
 
-        while (barberIsWorking) {
+        while (!barberIsWorking) {
             working.wait(&mutex);
         }
 
         barberIsFree = true;
         barberIsWorking = false;
-
-        mutex.unlock();
-    }
-
-    void waitClient() {
-        mutex.lock();
-
-        if (nbClients < 1) {
-            barber.wait(&mutex);
-        }
-
-        mutex.unlock();
-    }
-
-    void ejectClient() {
-        mutex.lock();
-
-        working.wakeOne();
-
-        mutex.unlock();
-    }
-
-    /*void enter() {
-        mutex.lock();
-
-        while(nbClients < NB_SIEGES)
-            client.wait(&mutex);
-
-        mutex.unlock();
-    }
-
-    void quit() {
-        mutex.lock();
-
-        nbClients--;
         client.wakeOne();
 
         mutex.unlock();
-    }*/
-
+    }
 
 };
 
