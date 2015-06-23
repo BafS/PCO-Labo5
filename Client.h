@@ -44,7 +44,7 @@ Q_OBJECT
 
         while (alive) {
             qDebug() << "Client("<<id<<"): " << "hair growing";
-            waitHairGrow();
+            this->sleep(sleepTime);
             qDebug() << "Client("<<id<<"): " << "hair ready to cut";
 
             // Essaye de rentrer dans la salle d'attente
@@ -55,38 +55,9 @@ Q_OBJECT
             }
 
             mon->goToBarber();
-
-            qDebug() << "Client("<<id<<"): " << "enter in waiting room";
-            qDebug() << "Client("<<id<<"): " << "wait barber";
-            waitingBarber();
-            qDebug() << "Client("<<id<<"): " << "go to barber";
-            goToBarber();
-            qDebug() << "Client("<<id<<"): " << "wait for the haircut is finished";
-            waitHairCutIsFinished();
-            qDebug() << "Client("<<id<<"): " << "hair cut";
         }
     }
 
-    void waitHairGrow() {
-        this->sleep(sleepTime);
-    }
-
-    bool goToWaitingRoom() {
-        // TODO: vérifier si la salle d'attente est pleine ou non
-        return true;
-    }
-
-    void waitingBarber() {
-
-    }
-
-    void goToBarber() {
-
-    }
-
-    void waitHairCutIsFinished() {
-
-    }
 
 public:
     Client(HairStyleMonitor *m) {
