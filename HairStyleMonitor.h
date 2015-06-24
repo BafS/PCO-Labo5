@@ -12,6 +12,7 @@ class HairStyleMonitor {
 protected:
     QMutex mutex;
     QWaitCondition client;
+    QWaitCondition clientTatoo; // @TODO
     QWaitCondition working;
     QWaitCondition barber;
     int nbClients = 0; // Clients actuellement dans la salle d'attente.

@@ -29,9 +29,8 @@
 #define MULT_GO_HOME    0.5
 
 
-
 class Client : public QThread {
-private:
+protected:
     unsigned int id;
     bool alive = true;
     unsigned int sleepTime;
@@ -39,23 +38,6 @@ private:
 
 Q_OBJECT
     void run() {
-
-        qDebug() << "New client n°" << id;
-
-        while (alive) {
-            qDebug() << "Client("<<id<<"): " << "hair growing";
-            this->sleep(sleepTime);
-            qDebug() << "Client("<<id<<"): " << "hair ready to cut";
-
-            // Essaye de rentrer dans la salle d'attente
-            qDebug() << "Client("<<id<<"): " << "try to enter in waiting room";
-            while(!mon->tryEnter()) {
-                this->sleep(sleepTime * MULT_GO_HOME); // Si la salle est pleine, le client rentre
-                                                       // chez lui et reviens plus tard
-            }
-
-            mon->goToBarber();
-        }
     }
 
 
@@ -70,7 +52,7 @@ public:
 
     };
 
-    ~Client() {};
+    virtual ~Client() {};
 };
 
 
