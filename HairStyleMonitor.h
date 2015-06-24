@@ -1,12 +1,33 @@
 /**
  * Moniteur du salon de coiffure/tatouage
  * ======================================
+ * Ce moniteur permet au clients de se synchroniser avec le barbier.
  *
+ * Il existe deux types de clients:
+ *  - Les client à coiffer
+ *  - Les client à tatouer
+ *
+ * Les clients à tatouer sont prioritaire.
+ *
+ * Les clients utilisent le moniteur de la manière suivante:
+ *  1) Arrive au salon; Si la salle d'attente est pleine -> attend, puis reviens
+ *                      Sinon -> Entre dans la salle d'attente
+ *  2) Attend son tour (attente passive)
+ *     S'assoie (libère une place dans la salle d'attente)
+ *     Attend que le barbier finisse
+ *     -> la priorité est appliquée et le prochain client est réveillé
+ *
+ * Le barbier utilise le moniteur de la manière suivante:
+ *  1) Ouverture du magasin; signale aux clients que le barbier est disponible
+ *  2) Attente de clients (attente passive)
+ *  3) Fin d'une coupe/tatoo; signale au client actuel qu'il peut sortir
+ *                            signale au prochain client que le barbier est disponible
  *
  *
  *
  * Note:
  *  - barberIsWorking est à true lorsque le barbier n'est pas sur sont lieu de travail
+ *  - La salle d'attente est ouverte lorsque le barbier n'est pas présent
  *
  */
 #ifndef HAITSTYLEMONITOR_H
@@ -118,7 +139,7 @@ public:
         // Réveil le prochain client de la salle d'attente
         // !!! Priorité au client à tatouer
         if (nbClients[TATOO] > 0) {
-            qDebug() << "mon: Prioritity for tatoo";
+            qDebug() << "mon: Priority for tatoo";
             client[TATOO].wakeOne();
         } else {
             client[HAIRCUT].wakeOne();
