@@ -1,3 +1,14 @@
+/**
+ * Moniteur du salon de coiffure/tatouage
+ * ======================================
+ *
+ *
+ *
+ *
+ * Note:
+ *  - barberIsWorking est à true lorsque le barbier n'est pas sur sont lieu de travail
+ *
+ */
 #ifndef HAITSTYLEMONITOR_H
 #define HAITSTYLEMONITOR_H
 
@@ -18,8 +29,7 @@ protected:
     QWaitCondition working;
     QWaitCondition barber;
     int nbClients[2]; // Clients à coiffer/tatouer actuellement dans la salle d'attente.
-    bool barberIsFree = false;
-    bool barberIsWorking = false;
+    bool barberIsWorking = true;
 
 public:
     HairStyleMonitor() {
@@ -34,7 +44,7 @@ public:
     void openStore() {
         mutex.lock();
 
-        barberIsFree = true;
+        barberIsWorking = false;
 
         mutex.unlock();
     }
@@ -91,14 +101,13 @@ public:
     void goToBarber(int type) {
         mutex.lock();
 
-        while (!barberIsFree) {
+        while (barberIsWorking) {
             client[type].wait(&mutex);
         }
 
         nbClients[type]--;
 
         // réveil d barbier
-        barberIsFree = false;
         barberIsWorking = true;
         barber.wakeOne();
 
@@ -106,8 +115,7 @@ public:
             working.wait(&mutex);
         }
 
-        barberIsFree = true;
-
+        // Réveil le prochain client de la salle d'attente
         // !!! Priorité au client à tatouer
         if (nbClients[TATOO] > 0) {
             qDebug() << "mon: Prioritity for tatoo";
