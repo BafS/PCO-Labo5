@@ -55,6 +55,7 @@ public:
         mutex.lock();
 
         qDebug() << "mon: next!";
+        barberIsWorking = false;
         working.wakeOne();
 
         mutex.unlock();
@@ -97,12 +98,11 @@ public:
         barberIsWorking = true;
         barber.wakeOne();
 
-        while (!barberIsWorking) {
+        while (barberIsWorking) {
             working.wait(&mutex);
         }
 
         barberIsFree = true;
-        barberIsWorking = false;
         client.wakeOne();
 
         mutex.unlock();
