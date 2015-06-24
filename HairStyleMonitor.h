@@ -7,20 +7,25 @@
 
 #define NB_SIEGES 8
 
+#define HAIRCUT 0
+#define TATOO 1
+
 class HairStyleMonitor {
 
 protected:
     QMutex mutex;
-    QWaitCondition client;
-    QWaitCondition clientTatoo; // @TODO
+    QWaitCondition client[2];
     QWaitCondition working;
     QWaitCondition barber;
-    int nbClients = 0; // Clients actuellement dans la salle d'attente.
+    int nbClients[2]; // Clients à coiffer/tatouer actuellement dans la salle d'attente.
     bool barberIsFree = false;
     bool barberIsWorking = false;
 
 public:
-    HairStyleMonitor() {};
+    HairStyleMonitor() {
+        nbClients[HAIRCUT] = 0;
+        nbClients[TATOO] = 0;
+    };
     ~HairStyleMonitor() {};
 
     /**
@@ -40,7 +45,7 @@ public:
     void waitClient() {
         mutex.lock();
 
-        if (nbClients < 1) {
+        if (nbClients[HAIRCUT] + nbClients[TATOO] < 1) {
             barber.wait(&mutex);
         }
 
@@ -66,13 +71,12 @@ public:
      * Le client esssaie d'entrer dans la salle d'attente
      * @return vrai si l'entrée est réussie
      */
-    bool tryEnter() {
+    bool tryEnter(int type) {
         mutex.lock();
 
-        if (nbClients < NB_SIEGES) {
-            qDebug() << "mon: New client in waiting room";
-
-            nbClients++;
+        if (nbClients[HAIRCUT] + nbClients[TATOO] < NB_SIEGES) {
+            nbClients[type]++;
+            qDebug() << "mon: New client in waiting room (" << nbClients[HAIRCUT] << "/" << nbClients[TATOO] << ")";
             mutex.unlock();
             return true;
         }
@@ -84,14 +88,14 @@ public:
     /**
      * Le client attend que le barbier soit libre et se fait tatouer/couper les cheveux
      */
-    void goToBarber() {
+    void goToBarber(int type) {
         mutex.lock();
 
         while (!barberIsFree) {
-            client.wait(&mutex);
+            client[type].wait(&mutex);
         }
 
-        nbClients--;
+        nbClients[type]--;
 
         // réveil d barbier
         barberIsFree = false;
@@ -103,7 +107,14 @@ public:
         }
 
         barberIsFree = true;
-        client.wakeOne();
+
+        // !!! Priorité au client à tatouer
+        if (nbClients[TATOO] > 0) {
+            qDebug() << "mon: Prioritity for tatoo";
+            client[TATOO].wakeOne();
+        } else {
+            client[HAIRCUT].wakeOne();
+        }
 
         mutex.unlock();
     }

@@ -12,6 +12,7 @@
 #include "HairStyleMonitor.h"
 #include "Barber.h"
 #include "ClientHaircut.h"
+#include "ClientTatoo.h"
 #include "Client.h"
 
 void display() {
@@ -54,16 +55,26 @@ int main(int argc, char *argv[]) {
     Barber barber(&mon);
     //barber = new Barber(&mon);
     barber.start();
-    QList<Client*> clients;
+    QList<ClientHaircut*> clientsHaircut;
+    QList<ClientTatoo*> clientsTatoo;
 
     for (int i = 0; i < NB_CLIENTS_HAIRCUT; i++) {
-        clients.append(new ClientHaircut(&mon));
-        clients.at(i)->start();
+        clientsHaircut.append(new ClientHaircut(&mon));
+        clientsHaircut.at(i)->start();
+    }
+
+    for (int i = 0; i < NB_CLIENTS_TATOO; i++) {
+        clientsTatoo.append(new ClientTatoo(&mon));
+        clientsTatoo.at(i)->start();
     }
 
     // Wait all clients
     for (int i = 0; i < NB_CLIENTS_HAIRCUT; i++) {
-        clients.at(i)->wait();
+        clientsHaircut.at(i)->wait();
+    }
+
+    for (int i = 0; i < NB_CLIENTS_TATOO; i++) {
+        clientsTatoo.at(i)->wait();
     }
 
     std::cout << ">>> end of simulation";

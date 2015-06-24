@@ -20,21 +20,21 @@ class ClientHaircut : public Client {
     Q_OBJECT
         void run() {
 
-            qDebug() << "New client n°" << id;
+            qDebug() << "New haircut client n°" << id;
 
             while (alive) {
-                qDebug() << "Client("<<id<<"): hair growing";
+                qDebug() << "ClientH("<<id<<"): hair growing";
                 this->sleep(sleepTime);
-                qDebug() << "Client("<<id<<"): hair ready to cut";
+                qDebug() << "ClientH("<<id<<"): hair ready to cut";
 
                 // Essaye de rentrer dans la salle d'attente
-                qDebug() << "Client("<<id<<"): try to enter in waiting room";
-                while(!mon->tryEnter()) {
+                qDebug() << "ClientH("<<id<<"): try to enter in waiting room";
+                while(!mon->tryEnter(HAIRCUT)) {
                     this->sleep(sleepTime * MULT_GO_HOME); // Si la salle est pleine, le client rentre
                                                            // chez lui et reviens plus tard
                 }
 
-                mon->goToBarber();
+                mon->goToBarber(HAIRCUT);
             }
         }
 
