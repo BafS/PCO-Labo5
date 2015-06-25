@@ -15,6 +15,9 @@
 
 #include "Client.h"
 
+/**
+ * @brief Représente le client qui souhaite se faire faire un tatouage
+ */
 class ClientTatoo : public Client {
 
     Q_OBJECT
@@ -40,10 +43,7 @@ class ClientTatoo : public Client {
         }
 
 public:
-        ClientTatoo(HairStyleMonitor *m) : Client(m) {
-
-        }
-
+        ClientTatoo(HairStyleMonitor *m) : Client(m) {}
 };
 
 #endif // CLIENTTATOO_H

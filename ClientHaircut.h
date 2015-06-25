@@ -15,6 +15,9 @@
 
 #include "Client.h"
 
+/**
+ * @brief Représente le client qui souhaite se faire couper les cheveux
+ */
 class ClientHaircut : public Client {
 
     Q_OBJECT
@@ -29,6 +32,7 @@ class ClientHaircut : public Client {
 
                 // Essaye de rentrer dans la salle d'attente
                 qDebug() << "ClientH("<<id<<"): try to enter in waiting room";
+
                 while(!mon->tryEnter(HAIRCUT)) {
                     this->sleep(sleepTime * MULT_GO_HOME); // Si la salle est pleine, le client rentre
                                                            // chez lui et reviens plus tard
@@ -39,9 +43,7 @@ class ClientHaircut : public Client {
         }
 
 public:
-        ClientHaircut(HairStyleMonitor *m) : Client(m) {
-
-        }
+        ClientHaircut(HairStyleMonitor *m) : Client(m) {}
 };
 
 #endif // CLIENTHAIRCUT_H

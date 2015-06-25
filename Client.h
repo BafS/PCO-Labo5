@@ -37,22 +37,19 @@ protected:
     HairStyleMonitor *mon;
 
 Q_OBJECT
-    void run() {
-    }
+    virtual void run() = 0;
 
 
 public:
-    Client(HairStyleMonitor *m) {
-        mon = m;
-
-        id = rand() % ID_RANGE; // generate random id
+    Client(HairStyleMonitor *m) : mon(m) {
+        // generate random id
+        id = rand() % ID_RANGE;
 
         // Random sleep time
         sleepTime = (rand() % (HAIR_GROW_TIME_MAX + 1)) + HAIR_GROW_TIME_MIN;
+    }
 
-    };
-
-    virtual ~Client() {};
+    virtual ~Client() {}
 };
 
 

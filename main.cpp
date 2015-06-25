@@ -15,10 +15,6 @@
 #include "ClientTatoo.h"
 #include "Client.h"
 
-void display() {
-
-}
-
 int main(int argc, char *argv[]) {
     QCoreApplication a(argc, argv);
 

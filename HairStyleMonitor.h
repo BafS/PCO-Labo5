@@ -42,6 +42,9 @@
 #define HAIRCUT 0
 #define TATOO 1
 
+/**
+ * @brief The Hair style Monitor
+ */
 class HairStyleMonitor {
 
 protected:
@@ -56,8 +59,9 @@ public:
     HairStyleMonitor() {
         nbClients[HAIRCUT] = 0;
         nbClients[TATOO] = 0;
-    };
-    ~HairStyleMonitor() {};
+    }
+
+    ~HairStyleMonitor() {}
 
     /**
      * Permet au barbier d'annoncer qu'il ouvre son salon de coiffure
@@ -118,6 +122,7 @@ public:
 
     /**
      * Le client attend que le barbier soit libre et se fait tatouer/couper les cheveux
+     * @param Type de personne (0 ou 1)
      */
     void goToBarber(int type) {
         mutex.lock();
@@ -137,7 +142,7 @@ public:
         }
 
         // Réveil le prochain client de la salle d'attente
-        // !!! Priorité au client à tatouer
+        // On prend dabord les clients à tatouer
         if (nbClients[TATOO] > 0) {
             qDebug() << "mon: Priority for tatoo";
             client[TATOO].wakeOne();
@@ -147,7 +152,6 @@ public:
 
         mutex.unlock();
     }
-
 };
 
 #endif // MONITOR_H

@@ -20,6 +20,9 @@
 #define MIN_WORKING_TIME    1
 #define MAX_WORKING_TIME    4
 
+/**
+ * @brief The Barber class
+ */
 class Barber : public QThread {
 private:
     bool alive = true;
@@ -27,17 +30,15 @@ private:
 
 Q_OBJECT
     void run() {
-
         mon->openStore();
 
         while(alive) {
             qDebug() << "Barber: waiting client";
             mon->waitClient();
             qDebug() << "Barber: cut/tatoo client";
-            working();
-            mon->ejectClient();
+            working(); // work on the client
+            mon->ejectClient(); // Eject when the work is finished
         }
-
     }
 
     void working() {
@@ -46,11 +47,9 @@ Q_OBJECT
     }
 
 public:
-    Barber (HairStyleMonitor *m) {
-        mon = m;
-    };
+    Barber (HairStyleMonitor *m) : mon(m) { }
 
-    ~Barber() {};
+    ~Barber() {}
 };
 
 #endif // BARBER_H
